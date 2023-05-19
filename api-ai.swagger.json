@@ -160,7 +160,7 @@
         ]
       }
     },
-    "/user": {
+    "/userinfo": {
       "get": {
         "summary": "获取用户信息",
         "operationId": "UserService_Get",
