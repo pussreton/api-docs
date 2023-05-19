@@ -10,6 +10,9 @@
     },
     {
       "name": "UserService"
+    },
+    {
+      "name": "AuthorizationService"
     }
   ],
   "consumes": [
@@ -19,8 +22,74 @@
     "application/json"
   ],
   "paths": {
-    "/messages": {
+    "/authorizations/access/credentials/create": {
       "post": {
+        "summary": "登录获取令牌",
+        "operationId": "AuthorizationService_CreateCredential",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Credential"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateCredentialRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthorizationService"
+        ]
+      }
+    },
+    "/authorizations/access/credentials/refresh": {
+      "post": {
+        "summary": "刷新令牌",
+        "operationId": "AuthorizationService_RefreshCredential",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Credential"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateCredentialRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthorizationService"
+        ]
+      }
+    },
+    "/messages": {
+      "get": {
         "summary": "消息列表",
         "operationId": "MessageService_ListMessage",
         "responses": {
@@ -39,28 +108,34 @@
         },
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1ListMessageRequest"
-            }
+            "name": "pageSize",
+            "description": "分页：分页大小 范围10-50",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page",
+            "description": "分页：页数0-1000",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           }
         ],
         "tags": [
           "MessageService"
         ]
-      }
-    },
-    "/tokens/access": {
+      },
       "post": {
-        "summary": "登录",
-        "operationId": "UserService_Login",
+        "summary": "使用WebSocket，本接口暂不开放\n一般HTTP形式发送消息\n流式返回使用WebSocket，地址： wss://api.ai.pussreton.cn/websocket",
+        "operationId": "MessageService_CreateMessage",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1Token"
+              "$ref": "#/definitions/v1Message"
             }
           },
           "default": {
@@ -76,45 +151,12 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1LoginRequest"
+              "$ref": "#/definitions/v1CreateMessageRequest"
             }
           }
         ],
         "tags": [
-          "UserService"
-        ]
-      }
-    },
-    "/tokens/refresh": {
-      "post": {
-        "summary": "刷新令牌 冷启动时如果本地保存有令牌，调用刷新接口",
-        "operationId": "UserService_RefreshToken",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1Token"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1RefreshTokenRequest"
-            }
-          }
-        ],
-        "tags": [
-          "UserService"
+          "MessageService"
         ]
       }
     },
@@ -143,7 +185,7 @@
     }
   },
   "definitions": {
-    "LoginRequestAPP": {
+    "CreateCredentialRequestAPP": {
       "type": "string",
       "enum": [
         "UNKNOWN",
@@ -181,9 +223,39 @@
         }
       }
     },
+    "v1CreateCredentialRequest": {
+      "type": "object",
+      "properties": {
+        "fromApp": {
+          "$ref": "#/definitions/CreateCredentialRequestAPP",
+          "title": "来源：限制3"
+        },
+        "code": {
+          "type": "string",
+          "title": "临时授权码"
+        },
+        "promotionCode": {
+          "type": "string",
+          "title": "分享链接参数 推广码"
+        }
+      }
+    },
     "v1CreateMessageRequest": {
       "type": "object",
       "title": "使用WebSocket，本接口不开放"
+    },
+    "v1Credential": {
+      "type": "object",
+      "properties": {
+        "accessToken": {
+          "type": "string",
+          "title": "请求头中Authorization: Bearer access_token\nwebsocket连接时也同样如此，否次无法连接"
+        },
+        "refreshToken": {
+          "type": "string",
+          "title": "刷新令牌 冷启动时如果本地保存有令牌，调用刷新接口"
+        }
+      }
     },
     "v1ListMessageReply": {
       "type": "object",
@@ -199,38 +271,6 @@
             "$ref": "#/definitions/v1Message"
           },
           "title": "项目列表"
-        }
-      }
-    },
-    "v1ListMessageRequest": {
-      "type": "object",
-      "properties": {
-        "pageSize": {
-          "type": "integer",
-          "format": "int32",
-          "title": "分页：分页大小 范围10-50"
-        },
-        "page": {
-          "type": "integer",
-          "format": "int32",
-          "title": "分页：页数0-1000"
-        }
-      }
-    },
-    "v1LoginRequest": {
-      "type": "object",
-      "properties": {
-        "fromApp": {
-          "$ref": "#/definitions/LoginRequestAPP",
-          "title": "来源：限制3"
-        },
-        "code": {
-          "type": "string",
-          "title": "临时授权码"
-        },
-        "promotionCode": {
-          "type": "string",
-          "title": "分享链接参数 推广码"
         }
       }
     },
@@ -252,28 +292,6 @@
         "content": {
           "type": "string",
           "title": "回答"
-        }
-      }
-    },
-    "v1RefreshTokenRequest": {
-      "type": "object",
-      "properties": {
-        "refreshToken": {
-          "type": "string",
-          "title": "刷新令牌。 请求头中Authorization继续保留access_token"
-        }
-      }
-    },
-    "v1Token": {
-      "type": "object",
-      "properties": {
-        "accessToken": {
-          "type": "string",
-          "title": "请求头中Authorization: Bearer access_token\nwebsocket连接时也同样如此，否次无法连接"
-        },
-        "refreshToken": {
-          "type": "string",
-          "title": "刷新令牌 冷启动时如果本地保存有令牌，调用刷新接口"
         }
       }
     },
