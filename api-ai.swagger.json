@@ -22,7 +22,7 @@
     "application/json"
   ],
   "paths": {
-    "/authorizations/access/credentials/create": {
+    "/authorizations/credential/actions/create": {
       "post": {
         "summary": "登录获取令牌",
         "operationId": "AuthorizationService_CreateCredential",
@@ -55,7 +55,7 @@
         ]
       }
     },
-    "/authorizations/access/credentials/refresh": {
+    "/authorizations/credential/actions/refresh": {
       "post": {
         "summary": "刷新令牌",
         "operationId": "AuthorizationService_RefreshCredential",
