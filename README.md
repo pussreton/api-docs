@@ -1,9 +1,7 @@
 
-##### 请求头
+#### 接口文档
 
 Authorization: Bearer ${accessToken}
 
 
-##### 接口文档
-
-[HTTP文档](https://mdzf-inc.github.io/docs/api.html)
+[HTTP文档](https://pussreton.github.io/api-docs/api.html)
