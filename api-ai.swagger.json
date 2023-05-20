@@ -88,7 +88,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1CreateCredentialRequest"
+              "$ref": "#/definitions/v1RefreshCredentialRequest"
             }
           }
         ],
@@ -604,6 +604,18 @@
           "type": "integer",
           "format": "int32",
           "title": "有效期 天"
+        }
+      }
+    },
+    "v1RefreshCredentialRequest": {
+      "type": "object",
+      "properties": {
+        "accessToken": {
+          "type": "string",
+          "title": "刷新令牌。 请求头中Authorization继续保留access_token"
+        },
+        "refreshToken": {
+          "type": "string"
         }
       }
     },
