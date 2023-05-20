@@ -9,6 +9,9 @@
       "name": "OrderService"
     },
     {
+      "name": "WithdrawalService"
+    },
+    {
       "name": "MessageService"
     },
     {
@@ -277,6 +280,78 @@
           "UserService"
         ]
       }
+    },
+    "/withdrawals": {
+      "get": {
+        "summary": "提现记录",
+        "operationId": "WithdrawalService_ListWithdrawal",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListWithdrawalReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pageSize",
+            "description": "分页：分页大小 范围10-50",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "page",
+            "description": "分页：页数0-1000",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "WithdrawalService"
+        ]
+      },
+      "post": {
+        "summary": "提现",
+        "operationId": "WithdrawalService_CreateWithdrawal",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Withdrawal"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateWithdrawalRequest"
+            }
+          }
+        ],
+        "tags": [
+          "WithdrawalService"
+        ]
+      }
     }
   },
   "definitions": {
@@ -386,6 +461,16 @@
         }
       }
     },
+    "v1CreateWithdrawalRequest": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "format": "double",
+          "title": "金额 必须 \u003e=5元 \u0026\u0026 \u003c=2000元"
+        }
+      }
+    },
     "v1Credential": {
       "type": "object",
       "properties": {
@@ -427,6 +512,21 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/v1Product"
+          }
+        }
+      }
+    },
+    "v1ListWithdrawalReply": {
+      "type": "object",
+      "properties": {
+        "totalSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Withdrawal"
           }
         }
       }
@@ -558,6 +658,44 @@
           "title": "提问有效期"
         }
       }
+    },
+    "v1Withdrawal": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "createDate": {
+          "type": "string",
+          "title": "提现日期"
+        },
+        "amount": {
+          "type": "string",
+          "title": "金额"
+        },
+        "status": {
+          "$ref": "#/definitions/v1WithdrawalStatus",
+          "title": "状态"
+        },
+        "type": {
+          "type": "integer",
+          "format": "int32",
+          "title": "来源 1.直接推荐  2.间接推荐"
+        }
+      }
+    },
+    "v1WithdrawalStatus": {
+      "type": "string",
+      "enum": [
+        "PENDING",
+        "APPROVED",
+        "REJECTED",
+        "PAID",
+        "FAILED"
+      ],
+      "default": "PENDING",
+      "title": "- PENDING: 待审核\n - APPROVED: 成功\n - REJECTED: 失败\n - PAID: 已打款\n - FAILED: 打款失败"
     }
   }
 }
