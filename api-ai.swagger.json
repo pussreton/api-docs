@@ -220,103 +220,11 @@
         "parameters": [
           {
             "name": "orderId",
+            "description": "订单ID",
             "in": "path",
             "required": true,
             "type": "string",
             "format": "int64"
-          }
-        ],
-        "tags": [
-          "OrderService"
-        ]
-      }
-    },
-    "/orders/{orderId}/payments/wxmini/actions/notify": {
-      "get": {
-        "summary": "订单通知",
-        "operationId": "OrderService_OrderPaymentNotify",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "orderId",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "int64"
-          },
-          {
-            "name": "id",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "createTime",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "summary",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "eventType",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "resourceType",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "resource.algorithm",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "resource.ciphertext",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "resource.associatedData",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "resource.originalType",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "resource.nonce",
-            "in": "query",
-            "required": false,
-            "type": "string"
           }
         ],
         "tags": [
@@ -406,26 +314,6 @@
         }
       }
     },
-    "OrderPaymentNotifyRequestResource": {
-      "type": "object",
-      "properties": {
-        "algorithm": {
-          "type": "string"
-        },
-        "ciphertext": {
-          "type": "string"
-        },
-        "associatedData": {
-          "type": "string"
-        },
-        "originalType": {
-          "type": "string"
-        },
-        "nonce": {
-          "type": "string"
-        }
-      }
-    },
     "googlerpcStatus": {
       "type": "object",
       "properties": {
@@ -479,10 +367,12 @@
       "properties": {
         "orderId": {
           "type": "string",
-          "format": "int64"
+          "format": "int64",
+          "title": "订单ID"
         },
         "payment": {
-          "$ref": "#/definitions/CreateOrderReplyPayment"
+          "$ref": "#/definitions/CreateOrderReplyPayment",
+          "title": "小程序调用支付需要的信息"
         }
       }
     },
@@ -491,7 +381,8 @@
       "properties": {
         "productId": {
           "type": "string",
-          "format": "int64"
+          "format": "int64",
+          "title": "产品ID，从产品列表获取"
         }
       }
     },
@@ -630,6 +521,10 @@
         "nickname": {
           "type": "string",
           "title": "昵称"
+        },
+        "promotionCode": {
+          "type": "string",
+          "title": "推广代码"
         },
         "directInvite": {
           "type": "integer",
