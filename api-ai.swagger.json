@@ -12,6 +12,9 @@
       "name": "WithdrawalService"
     },
     {
+      "name": "TemplateService"
+    },
+    {
       "name": "MessageService"
     },
     {
@@ -255,6 +258,29 @@
         },
         "tags": [
           "ProductService"
+        ]
+      }
+    },
+    "/templates": {
+      "get": {
+        "summary": "获取行业模板",
+        "operationId": "TemplateService_ListTemplate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListTemplateReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TemplateService"
         ]
       }
     },
@@ -516,6 +542,21 @@
         }
       }
     },
+    "v1ListTemplateReply": {
+      "type": "object",
+      "properties": {
+        "totalSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Template"
+          }
+        }
+      }
+    },
     "v1ListWithdrawalReply": {
       "type": "object",
       "properties": {
@@ -616,6 +657,27 @@
         },
         "refreshToken": {
           "type": "string"
+        }
+      }
+    },
+    "v1Template": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string",
+          "title": "归类名称"
+        },
+        "description": {
+          "type": "string",
+          "title": "介绍"
+        },
+        "advice": {
+          "type": "string",
+          "title": "建议。放置在输入框做placeholder"
         }
       }
     },
