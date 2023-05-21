@@ -678,6 +678,10 @@
         "advice": {
           "type": "string",
           "title": "建议。放置在输入框做placeholder"
+        },
+        "iconUrl": {
+          "type": "string",
+          "title": "icon"
         }
       }
     },
