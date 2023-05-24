@@ -100,6 +100,36 @@
         ]
       }
     },
+    "/authorizations/mp/web/config": {
+      "get": {
+        "operationId": "AuthorizationService_GetMpWebConfig",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetMpWebConfigReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "url",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "AuthorizationService"
+        ]
+      }
+    },
     "/messages": {
       "get": {
         "summary": "消息列表",
@@ -256,6 +286,15 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "code",
+            "description": "小程序无需使用",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ProductService"
         ]
@@ -381,17 +420,6 @@
     }
   },
   "definitions": {
-    "CreateCredentialRequestAPP": {
-      "type": "string",
-      "enum": [
-        "UNKNOWN",
-        "WX_MP",
-        "WX_H5",
-        "WX_MINI"
-      ],
-      "default": "UNKNOWN",
-      "title": "- UNKNOWN: 未知\n - WX_MP: 微信公众号\n - WX_H5: 微信H5\n - WX_MINI: 微信小程序"
-    },
     "CreateOrderReplyPayment": {
       "type": "object",
       "properties": {
@@ -446,7 +474,7 @@
       "type": "object",
       "properties": {
         "fromApp": {
-          "$ref": "#/definitions/CreateCredentialRequestAPP",
+          "$ref": "#/definitions/v1CreateCredentialRequestAPP",
           "title": "来源：限制3"
         },
         "code": {
@@ -458,6 +486,17 @@
           "title": "分享链接参数 推广码"
         }
       }
+    },
+    "v1CreateCredentialRequestAPP": {
+      "type": "string",
+      "enum": [
+        "UNKNOWN",
+        "WX_MP",
+        "WX_H5",
+        "WX_MINI"
+      ],
+      "default": "UNKNOWN",
+      "title": "- UNKNOWN: 未知\n - WX_MP: 微信公众号\n - WX_H5: 微信H5\n - WX_MINI: 微信小程序"
     },
     "v1CreateMessageRequest": {
       "type": "object",
@@ -484,8 +523,23 @@
           "type": "string",
           "format": "int64",
           "title": "产品ID，从产品列表获取"
+        },
+        "fromApp": {
+          "$ref": "#/definitions/v1CreateOrderRequestAPP",
+          "title": "来源：限制3"
         }
       }
+    },
+    "v1CreateOrderRequestAPP": {
+      "type": "string",
+      "enum": [
+        "UNKNOWN",
+        "WX_MP",
+        "WX_H5",
+        "WX_MINI"
+      ],
+      "default": "UNKNOWN",
+      "title": "- UNKNOWN: 未知\n - WX_MP: 微信公众号\n - WX_H5: 微信H5\n - WX_MINI: 微信小程序"
     },
     "v1CreateWithdrawalRequest": {
       "type": "object",
@@ -507,6 +561,30 @@
         "refreshToken": {
           "type": "string",
           "title": "刷新令牌 冷启动时如果本地保存有令牌，调用刷新接口"
+        }
+      }
+    },
+    "v1GetMpWebConfigReply": {
+      "type": "object",
+      "properties": {
+        "appId": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string"
+        },
+        "nonceStr": {
+          "type": "string"
+        },
+        "signature": {
+          "type": "string"
+        },
+        "jsApiList": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "chooseWXPay"
         }
       }
     },
@@ -539,6 +617,9 @@
           "items": {
             "$ref": "#/definitions/v1Product"
           }
+        },
+        "accessToken": {
+          "type": "string"
         }
       }
     },
@@ -645,6 +726,25 @@
           "type": "integer",
           "format": "int32",
           "title": "有效期 天"
+        },
+        "features": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "features"
+        },
+        "click": {
+          "type": "string",
+          "title": "产品描述"
+        },
+        "isDefault": {
+          "type": "boolean",
+          "title": "是否默认"
+        },
+        "badge": {
+          "type": "string",
+          "title": "badge"
         }
       }
     },
